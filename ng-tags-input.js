@@ -1,11 +1,11 @@
 /*!
- * ngTagsInput v2.1.1
+ * ngTagsInput v2.2.0
  * http://mbenford.github.io/ngTagsInput
  *
  * Copyright (c) 2013-2014 Michael Benford
  * License: MIT
  *
- * Generated at 2014-09-04 01:27:58 -0300
+ * Generated at 2014-10-25 19:11:04 -0400
  */
 (function() {
 'use strict';
@@ -100,7 +100,7 @@ var tagsInput = angular.module('ngTagsInput', []);
  *
  * @param {string} ngModel Assignable angular expression to data-bind to.
  * @param {string=} [displayProperty=text] Property to be rendered as the tag label.
- * @param {string=} [input=text] Type of the input element. Only 'text', 'email' and 'url' are supported values.
+ * @param {string=} [type=text] Type of the input element. Only 'text', 'email' and 'url' are supported values.
  * @param {number=} tabindex Tab order of the control.
  * @param {string=} [placeholder=Add a tag] Placeholder text for the control.
  * @param {number=} [minLength=3] Minimum length for a new tag.
@@ -362,13 +362,14 @@ tagsInput.directive('tagsInput', ["$timeout","$document","tagsInputConfig", func
                     addKeys[KEYS.comma] = options.addOnComma;
                     addKeys[KEYS.space] = options.addOnSpace;
 
-                    shouldAdd = !options.addFromAutocompleteOnly && addKeys[key];
+                    shouldAdd = addKeys[key];
                     shouldRemove = !shouldAdd && key === KEYS.backspace && scope.newTag.text.length === 0;
 
                     if (shouldAdd) {
-                        tagList.addText(scope.newTag.text);
-
-                        scope.$apply();
+                        if (!options.addFromAutocompleteOnly) {
+                            tagList.addText(scope.newTag.text);
+                            scope.$apply();
+                        }
                         e.preventDefault();
                     }
                     else if (shouldRemove) {
@@ -376,7 +377,6 @@ tagsInput.directive('tagsInput', ["$timeout","$document","tagsInputConfig", func
                         if (tag && options.enableEditingLastTag) {
                             scope.newTag.text = tag[options.displayProperty];
                         }
-
                         scope.$apply();
                         e.preventDefault();
                     }
@@ -410,6 +410,7 @@ tagsInput.directive('tagsInput', ["$timeout","$document","tagsInputConfig", func
         }
     };
 }]);
+
 
 /**
  * @ngdoc directive
